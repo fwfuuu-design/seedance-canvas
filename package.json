@@ -1,0 +1,14 @@
+{
+  "name": "seedance-canvas",
+  "version": "0.1.0",
+  "description": "Infinite-canvas studio for Seedance 2.5 / 2.0 video generation through a New API gateway. Zero dependencies.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
