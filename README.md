@@ -18,6 +18,8 @@ node server.mjs        # 或 npm start
 1. 欢迎页点「新建项目」或「打开项目文件夹」，在 Finder 里选一个文件夹。选择框弹不出来时，用「手动输入文件夹路径」。
 2. 右上角 ⚙ 设置里填**网关地址**和 **API Key**，点「测试连接」。
 
+想让每次打开都默认连到自己的网关，把 `local.config.example.json` 复制成 `local.config.json` 改一下即可。这个文件已在 `.gitignore` 里，不会被提交；设置里填过的值优先于它。
+
 ### 网关要求
 
 - New API 网关，已配置 `doubao-seedance-2-5-260628` / `doubao-seedance-2-0-260128` 渠道

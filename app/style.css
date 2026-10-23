@@ -348,3 +348,25 @@ pre.code { margin: 0; background: #141414; border: 1px solid var(--line); border
 .toast.ok { border-color: rgba(60,207,142,.4); }
 .toast.warn { border-color: rgba(240,180,76,.45); color: #ffe0a8; }
 .toast.err { border-color: rgba(255,107,94,.5); color: #ffc4bd; }
+
+/* ---------------- 时长滑块 ---------------- */
+.pp-slider { display: flex; align-items: center; gap: 12px; }
+.pp-slider .pp-l { display: flex; align-items: center; gap: 8px; width: auto; min-width: 52px; }
+.pp-slider .dur-val { font-family: var(--mono); font-size: 13px; color: var(--blue); font-weight: 600; min-width: 30px; }
+.pp-slider .pp-r { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; }
+.dur-edge { font-size: 11px; color: var(--text-3); font-family: var(--mono); flex: none; }
+.dur-track { position: relative; flex: 1; min-width: 0; display: flex; align-items: center; padding-top: 18px; }
+.dur-track .dur-slider { width: 100%; }
+.dur-bubble { position: absolute; top: 0; transform: translateX(-50%); font: 600 11px/16px var(--mono); color: #fff;
+  background: var(--blue); padding: 0 6px; border-radius: 5px; pointer-events: none; white-space: nowrap; }
+/* 已选部分用 --fill（由 JS 写入百分比）着色 */
+.dur-slider { -webkit-appearance: none; appearance: none; flex: 1; min-width: 0; height: 4px; margin: 10px 0; border-radius: 2px; outline: none; cursor: pointer;
+  background: linear-gradient(to right, var(--blue) 0 var(--fill, 0%), rgba(255,255,255,.14) var(--fill, 0%) 100%); }
+.dur-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 3px solid var(--blue);
+  box-shadow: 0 1px 4px rgba(0,0,0,.5); cursor: grab; transition: transform .12s; }
+.dur-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+.dur-slider:active::-webkit-slider-thumb { cursor: grabbing; transform: scale(1.15); }
+.dur-slider::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: #fff; border: 3px solid var(--blue); box-shadow: 0 1px 4px rgba(0,0,0,.5); cursor: grab; }
+.dur-slider::-moz-range-track { height: 4px; border-radius: 2px; background: transparent; }
+.dur-slider:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px rgba(74,157,255,.35); }
+

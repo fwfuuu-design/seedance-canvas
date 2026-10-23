@@ -1,6 +1,9 @@
 # 运行时数据：最近项目列表，含本机路径
 data/
 
+# 本机连接配置：网关地址 / Key，不能公开
+local.config.json
+
 # 编辑器 / 系统
 .DS_Store
 .claude/

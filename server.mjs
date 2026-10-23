@@ -323,6 +323,15 @@ async function route(req, res) {
   /* ---- 项目 ---- */
   if (M === "GET" && p === "/api/project") return sendJSON(res, 200, await projectInfo());
 
+  /* 本机默认连接配置：local.config.json（不进 Git），文件不存在就返回空对象 */
+  if (M === "GET" && p === "/api/defaults") {
+    try {
+      const raw = JSON.parse(await fsp.readFile(path.join(APP_ROOT, "local.config.json"), "utf8"));
+      const allow = ["baseUrl", "apiKey", "createPath", "fetchPath", "chatModel", "protocol"];
+      return sendJSON(res, 200, Object.fromEntries(Object.entries(raw).filter(([k]) => allow.includes(k))));
+    } catch { return sendJSON(res, 200, {}); }
+  }
+
   if (M === "GET" && p === "/api/projects/recent") {
     const list = [];
     for (const r of config.recent) list.push({ path: r, name: path.basename(r), exists: await isDir(r) });

@@ -1,0 +1,5 @@
+{
+  "baseUrl": "https://your-gateway.example.com",
+  "apiKey": "",
+  "chatModel": "claude-sonnet-5"
+}

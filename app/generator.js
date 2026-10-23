@@ -11,9 +11,17 @@ import { imageDataUrl, audioDataUrl, importRemote } from "./library.js";
 import { toast } from "./ui.js";
 
 const CONN_KEY = "seedance-canvas-conn";
+/** 本机默认值：来自 local.config.json（不进 Git），由 loadLocalDefaults() 填充 */
+let localDefaults = {};
+export async function loadLocalDefaults() {
+  try { const r = await fetch("/api/defaults"); if (r.ok) localDefaults = (await r.json()) || {}; } catch {}
+}
 export function getConn() {
-  try { return { ...DEFAULT_CONN, ...JSON.parse(localStorage.getItem(CONN_KEY) || "{}") }; }
-  catch { return { ...DEFAULT_CONN }; }
+  let saved = {};
+  try { saved = JSON.parse(localStorage.getItem(CONN_KEY) || "{}"); } catch {}
+  // 空字符串不覆盖默认值，否则旧版存下的空地址会盖掉本机配置
+  const nonEmpty = Object.fromEntries(Object.entries(saved).filter(([, v]) => v !== "" && v != null));
+  return { ...DEFAULT_CONN, ...localDefaults, ...nonEmpty };
 }
 export function setConn(c) { localStorage.setItem(CONN_KEY, JSON.stringify({ ...getConn(), ...c })); }
 

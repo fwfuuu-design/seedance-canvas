@@ -8,7 +8,7 @@ import {
 import { h, $, icon, fill, toast, menu, modal, confirmDialog, api, fileUrl, pickFiles, fmtBytes, fmtTime, fmtYuan, copyText } from "./ui.js";
 import { lib, refresh as refreshLib, upload, remove as removeAsset, reveal, onLibChange, kindOfFile, rename as renameAsset } from "./library.js";
 import { nodeBody, nodeBadge, edgeRole, initPanel, showPanelFor, refreshPanel, positionPanel } from "./nodes.js";
-import { getConn, setConn, generate, resumeAll, stopAllTimers, onTask, nodeIssue, isBusy } from "./generator.js";
+import { getConn, setConn, loadLocalDefaults, generate, resumeAll, stopAllTimers, onTask, nodeIssue, isBusy } from "./generator.js";
 
 const app = $("#app");
 
@@ -78,6 +78,7 @@ window.__seedance = {
    项目
    ========================================================= */
 async function boot() {
+  await loadLocalDefaults();
   const info = await api("/api/project").catch(() => ({ open: false }));
   if (info.open) await enterProject(info);
   else welcome();

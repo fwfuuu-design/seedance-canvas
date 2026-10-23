@@ -367,18 +367,50 @@ function paramsPopover(anchor, n) {
     const p = n.data.params, fam = modelByFamily(p.family);
     const redraw = () => { close(); paramsPopover(anchor, n); };
     const pick = (fn) => { setParam(n, fn); redraw(); };
-    const durs = [-1, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30].filter(d => d === -1 || d <= fam.maxDuration);
+    const durs = [4, 5, 6, 8, 10, 12, 15, 20, 25, 30].filter(d => d <= fam.maxDuration);
     return h("div", { class: "pp" },
       seg("比例", RATIOS.map(r => [r, r === "adaptive" ? "自适应" : r]), p.ratio, (v) => pick(pp => pp.ratio = v)),
       seg("分辨率", ["480p", "720p", "1080p", "4k"].map(r => [r, r.toUpperCase(), !fam.resolutions.includes(r),
         !fam.resolutions.includes(r) ? `Seedance ${p.family} 不支持` : ""]), p.resolution, (v) => pick(pp => pp.resolution = v)),
-      seg("时长", durs.map(d => [d, d === -1 ? "自动" : d + "s"]), Number(p.duration), (v) => pick(pp => pp.duration = v)),
+      // 滑块拖动时不能重建弹窗，否则每动一格就被打断
+      durationSlider(p, fam, (v) => setParam(n, pp => pp.duration = v)),
       seg("个数", [1, 2, 3, 4].map(c => [c, c + "个"]), Number(p.count || 1), (v) => pick(pp => pp.count = v)),
       seg("声音", [[true, "生成音频"], [false, "静音"]], !!p.generateAudio, (v) => pick(pp => pp.generateAudio = v)),
-      h("div", { class: "pp-note" }, `Seedance ${p.family}：时长 4–${fam.maxDuration}s，分辨率 ${fam.resolutions.join(" / ").toUpperCase()}。` +
-        (Number(p.duration) === -1 ? "「自动」由模型决定时长，按实际时长计费。" : "")));
+      h("div", { class: "pp-note" }, `Seedance ${p.family}：时长 4–${fam.maxDuration}s，分辨率 ${fam.resolutions.join(" / ").toUpperCase()}。`));
   };
   popover(anchor, build, { place: "top", class: "pp-pop" });
+}
+
+function durationSlider(params, fam, onChange) {
+  const min = 4, max = fam.maxDuration;
+  const cur = Math.max(min, Math.min(max, Number(params.duration)));
+  const label = h("span", { class: "dur-val" }, cur + "s");
+  const slider = h("input", {
+    type: "range", min, max, value: cur, step: 1, class: "no-drag dur-slider",
+    "aria-label": "视频时长（秒）",
+  });
+  // 跟着滑块走的数值气泡：普通元素，不依赖浏览器对 thumb 伪元素的支持
+  const bubble = h("span", { class: "dur-bubble" }, cur + "s");
+  const paint = (v) => {
+    const pct = (v - min) / (max - min) * 100;
+    slider.style.setProperty("--fill", pct + "%");
+    // 圆点宽 16px，按比例补偿，让气泡正对圆点中心
+    bubble.style.left = `calc(${pct}% + ${8 - pct * 0.16}px)`;
+    bubble.textContent = v + "s";
+  };
+  paint(cur);
+  slider.addEventListener("input", () => {
+    const v = +slider.value;
+    label.textContent = v + "s";
+    paint(v);
+    onChange(v);
+  });
+  return h("div", { class: "pp-row pp-slider" },
+    h("div", { class: "pp-l" }, "时长", label),
+    h("div", { class: "pp-r" },
+      h("span", { class: "dur-edge" }, min + "s"),
+      h("div", { class: "dur-track" }, slider, bubble),
+      h("span", { class: "dur-edge" }, max + "s")));
 }
 
 function advancedPopover(anchor, n) {
